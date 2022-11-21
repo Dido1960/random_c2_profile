@@ -13,7 +13,7 @@ This project is designed to generate malleable c2 profiles based on the referenc
 
 
 ```
-icloud123@icloud123deMacBook-Pro random_c2_profile % python3 random_c2profile.py yun xxx.gz.apigw.tencentcs.com
+python3 random_c2profile.py yun xxx.gz.apigw.tencentcs.com
 
 ===================================================================
  ___              _              ___ ___   ___          __ _ _     
