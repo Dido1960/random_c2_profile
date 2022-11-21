@@ -10,6 +10,35 @@ This project is designed to generate malleable c2 profiles based on the referenc
 - 适配云函数CDN上线，动态生成profile
 - 适配linux CrossC2，自定义协议上线云函数（生成.c文件）
 
+
+```
+icloud123@icloud123deMacBook-Pro random_c2_profile % python3 random_c2profile.py yun xxx.gz.apigw.tencentcs.com
+
+===================================================================
+ ___              _              ___ ___   ___          __ _ _     
+| _ \__ _ _ _  __| |___ _ __    / __|_  ) | _ \_ _ ___ / _(_) |___ 
+|   / _` | ' \/ _` / _ \ '  \  | (__ / /  |  _/ '_/ _ \  _| | / -_)
+|_|_\__,_|_||_\__,_\___/_|_|_|  \___/___| |_| |_| \___/_| |_|_\___|
+Cobalt Strike random C2 Profile generator
+Joe Vest (@joevest) - 2021
+===================================================================
+使用方式:
+    #普通
+    python3 random_c2profile.py
+    #支持云函数（非linux云函数无需设置域名）
+    python3 random_c2profile.py yun
+    #支持云函数（linux云函数上线需要设置域名）
+    python3 random_c2profile.py yun 域名
+    #支持cdn
+    python3 random_c2profile.py cdn 域名
+===================================================================
+
+[*] Generating Cobalt Strike 4.5 c2 profile...
+[*] Done. Don't forget to validate with c2lint. 
+[*] Profile saved to output/yun_SDXPDEZS.profile
+[*] Profile saved to output/yun_SDXPDEZS.c
+```
+
 ## Overview
 
 This project is meant to quickly generate a random c2 profile. It is basically a Jinja template with random variables. The idea is to focus on randomization vs a cohesive set of values that support a specific threat actor.
