@@ -7,6 +7,7 @@ Author: Joe Vest (@joevest)
 This project is designed to generate malleable c2 profiles based on the reference profile at https://github.com/threatexpress/malleable-c2/. 
 
 ## 改进
+- 参考https://github.com/threatexpress/random_c2_profile
 - 适配云函数CDN上线，动态生成profile
 - 适配linux CrossC2，自定义协议上线云函数（生成.c文件）
 
