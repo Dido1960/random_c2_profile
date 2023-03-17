@@ -12,10 +12,12 @@ Joe Vest (@joevest) - 2021
     python3 random_c2profile.py
     #支持云函数（非linux云函数无需设置域名）
     python3 random_c2profile.py yun
-    #支持云函数（linux云函数上线需要设置域名）
-    python3 random_c2profile.py yun 域名
+    #支持腾讯云函数（linux云函数上线需要设置域名）
+    python3 random_c2profile.py tenyun 域名
     #支持cdn
     python3 random_c2profile.py cdn 域名
+    #支持亚马逊云函数（linux云函数上线需要设置域名）
+    python3 random_c2profile.py awsyun 域名 stage名称
 ===================================================================
 '''
 
@@ -29,8 +31,10 @@ if len(sys.argv) == 1:
     type = "normal"
 else:
     type = sys.argv[1]
-    if len(sys.argv) >= 3:
+    if len(sys.argv) == 3:
         variables['host'] = sys.argv[2]
+    if type == "awsyun" and len(sys.argv) == 4:
+        variables['stage'] = sys.argv[3]
 
 # Get Cobalt Strike version from variables.py
 version = variables['version']
@@ -42,8 +46,11 @@ print("[*] Generating Cobalt Strike " + version + " c2 profile...")
 sample_name = type + "_" + get_random_string(8)
 c2profile_template_file_contents = open("c2profile_template_{}.jinja".format(type),'r').read()
 c2profile_template = Template(c2profile_template_file_contents)
-jinja2_variables = variables
+
+
+# jinja2_variables = variables
 variables['sample_name'] = sample_name
+
 random_c2profile = c2profile_template.render(variables)
 f = open("output/" + sample_name + '.profile', "a")
 f.write(random_c2profile)
