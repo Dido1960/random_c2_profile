@@ -34,7 +34,8 @@ else:
     if len(sys.argv) == 3:
         variables['host'] = sys.argv[2]
     if type == "awsyun" and len(sys.argv) == 4:
-        variables['stage'] = sys.argv[3]
+        variables['host'] = sys.argv[2]
+        variables['awsstage'] = sys.argv[3]
 
 # Get Cobalt Strike version from variables.py
 version = variables['version']
@@ -50,6 +51,10 @@ c2profile_template = Template(c2profile_template_file_contents)
 
 # jinja2_variables = variables
 variables['sample_name'] = sample_name
+
+
+
+
 
 random_c2profile = c2profile_template.render(variables)
 f = open("output/" + sample_name + '.profile', "a")
